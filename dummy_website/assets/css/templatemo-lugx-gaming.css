@@ -899,19 +899,24 @@ Trending Style
   transition: all .3s;
 }
 
-.trending .item .down-content a {
+.trending .item .down-content .join-group {
   position: absolute;
   display: inline-block;
   text-align: center;
   line-height: 40px;
-  width: 40px;
+  width: 130px;
   height: 40px;
   background-color: #ee626b;
   color: #fff;
-  border-radius: 50%;
+  border-radius: 8px;
+  border: none;
   right: 25px;
   bottom: 25px;
+  
   transition: all .3s;
+}
+.trending .item:hover .down-content .join-group {
+  background-color: #0071f8;
 }
 
 .trending .item:hover .down-content h4 {
