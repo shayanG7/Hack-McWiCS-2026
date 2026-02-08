@@ -81,6 +81,7 @@ html, body {
   -ms-text-size-adjust: 100%;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: #fffae9;
 }
 
 a {
@@ -289,7 +290,8 @@ Header Style
 */
 
 .background-header {
-  background-color: #0071f8 !important;
+  background: #2A7B9B !important;
+  background: linear-gradient(90deg,rgb(6, 91, 122) 0%, rgb(48, 185, 83) 100%) !important;
   border-radius: 0px 0px 25px 25px;
   height: 80px!important;
   position: fixed!important;
@@ -655,7 +657,7 @@ Banner Style
 */
 
 .main-banner {
-  background-image: url(../images/banner-bg.jpg);
+  /* background-image: url(../images/banner-bg.jpg); */
   border-radius: 0px 0px 150px 150px;
   background-position: center bottom;
   background-repeat: no-repeat;
@@ -1117,10 +1119,11 @@ Footer Style
 
 footer {
   margin-top: 150px;
-  background-color: #0071f8;
+  background: #2A7B9B;
+  background: linear-gradient(90deg,rgb(6, 91, 122) 0%, rgb(48, 185, 83) 100%) !important;
   background-repeat: no-repeat;
   background-size: cover;
-  background-image: url(../images/footer-bg.jpg);
+  /* background-image: url(../images/footer-bg.jpg); */
   min-height: 150px;
   border-radius: 150px 150px 0px 0px;
 }
@@ -1152,7 +1155,9 @@ Page Header Style
 */
 
 .page-heading {
-  background-image: url(../images/page-heading-bg.jpg);
+  /* background-image: url(../images/page-heading-bg.jpg); */
+  background: #2A7B9B;
+  background: linear-gradient(90deg,rgb(6, 91, 122) 0%, rgb(48, 185, 83) 100%) !important;
   border-radius: 0px 0px 150px 150px;
   background-position: center bottom;
   background-repeat: no-repeat;
@@ -1234,8 +1239,16 @@ Shop Page Style
 
 .trending-box .item .thumb {
   position: relative;
-  border-radius: 25px;
+  border-radius: 25px 15px 0px 0px;
   overflow: hidden;
+  width: 100%;
+  aspect-ratio: 2;
+}
+
+.trending-box .item .thumb-color {
+  background-color: #6c7cff;
+  width: 100%;
+  height: 100%;
 }
 
 .trending-box .item span.price em {
