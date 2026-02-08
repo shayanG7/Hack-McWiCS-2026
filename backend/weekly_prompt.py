@@ -11,15 +11,15 @@ def generate_weekly_prompt(category, group_name):
     :return: A string containing the generated prompt.
     """
     try:
-        client = genai.Client(api_key=GEMINI_API_KEY)
+        client = genai.Client(api_key="AIzaSyAfRffcs067Ka5eJ-XAZ4MSAYfeNAwdNvY")
 
         # Prompt
         prompt = f"""
-        You are a creative community manager for a news discussion group called '{group_name}' focused on '{category}'.
-        Generate a single, engaging, thought-provoking "Question of the Week" for the members to discuss.
+        You are a creative community manager for a news discussion group called '{group_name}' focused on '{group_name}'.
+        Generate a single, engaging, "Question of the Week" for the members to discuss.
         
         Requirements:
-        1. The question should be relevant to current events or timeless debates in {category}.
+        1. The question should be relevant to {group_name}.
         2. It should encourage everyone brings up different interesting opinions.
         3. Keep it under 20 words.
         4. Do not include phrases like "Here is a question". Just output the question directly.
@@ -34,8 +34,8 @@ def generate_weekly_prompt(category, group_name):
         return response.text.strip()
 
     except Exception as e:
-        # print(f"Error calling Gemini: {e}") ......?
-        return f"What's the most interesting thing you heard about {category} this week?"
+        print(f"Error calling Gemini: {e}")
+        return f"What's the most interesting thing you heard about {group_name} this week?"
 
 #if __name__ == "__main__":
 #    print(generate_weekly_prompt("Stranger Things", "Binge Watchers"))

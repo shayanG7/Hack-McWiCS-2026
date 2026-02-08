@@ -415,7 +415,7 @@ document.addEventListener('DOMContentLoaded', function () {
             // use selected image data if present
             const tagsInput = document.getElementById('new-group-tags');
             const tagsValue = tagsInput ? tagsInput.value.trim() : '';
-            const promptText = `Share a recent discovery with ${val}.`;
+            const promptText = `Pondering inspirational talking points...`;
             createGroupFromTitle(val, _selectedGroupImageData, true, null, null, tagsValue, promptText);
             // clear selected image after creation
             _selectedGroupImageData = null;

@@ -79,7 +79,7 @@ https://templatemo.com/tm-589-lugx-gaming
     <div class="container">
       <form class="row" action="#">
         <div class="col-lg-12">
-          <label for="share-thoughts" id="group-prompt" class="form-label d-block mb-2 pb-2 border-bottom">Response to Gemini Prompt Here</label>
+          <label for="share-thoughts" id="group-prompt" class="form-label d-block mb-2 pb-2 border-bottom">Pondering inspirational talking points...</label>
           <textarea
             id="share-thoughts"
             name="share_thoughts"
@@ -169,12 +169,58 @@ https://templatemo.com/tm-589-lugx-gaming
         if (group.title) document.title = group.title;
       };
 
+      var setPromptText = function (text) {
+        if (promptEl && text) {
+          promptEl.textContent = text;
+        }
+      };
+
+      var normalizeCategory = function (rawTags) {
+        if (!rawTags) return "";
+        return rawTags.replace(/#/g, " ").trim();
+      };
+
+      var groups = getGroups();
+      var match = null;
+
       if (groupId) {
-        var groups = getGroups();
-        var match = groups.find(function (g) {
+        match = groups.find(function (g) {
           return g && g.id === groupId;
         });
         applyGroupInfo(match);
+      }
+
+      var promptCacheKey = groupId ? "group_prompt:" + groupId : "group_prompt:default";
+      var cachedPrompt = localStorage.getItem(promptCacheKey);
+      if (cachedPrompt) {
+        setPromptText(cachedPrompt);
+      } else {
+        var groupName = (match && match.title) ? match.title : "News Group";
+        var category = normalizeCategory(match && match.tags ? match.tags : "") || "General";
+
+        fetch("http://localhost:5000/api/weekly-prompt?groupName=" + encodeURIComponent(groupName) + "&category=" + encodeURIComponent(category))
+          .then(function (res) {
+            if (!res.ok) throw new Error("Prompt request failed");
+            return res.json();
+          })
+          .then(function (data) {
+            if (!data || !data.prompt) return;
+            setPromptText(data.prompt);
+            localStorage.setItem(promptCacheKey, data.prompt);
+
+            if (match && match.id) {
+              var updated = groups.map(function (g) {
+                if (g && g.id === match.id) {
+                  return Object.assign({}, g, { prompt: data.prompt });
+                }
+                return g;
+              });
+              localStorage.setItem("notable_groups", JSON.stringify(updated));
+            }
+          })
+          .catch(function () {
+            return;
+          });
       }
 
       if (!textarea || !counter) {
