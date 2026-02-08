@@ -29,18 +29,19 @@ class User:
     # ____Password_____
     def set_password(self, raw_password):
         if not raw_password:
-            raise ValueError("password required")
+            raise ValueError("Password required")
         self.password_hash = generate_password_hash(raw_password)
-
-    def change_password(self, old_pw, new_pw):
-        if not self.check_password(old_pw):
-            raise ValueError("wrong password")
-        self.set_password(new_pw)
 
     def check_password(self, raw_password):
         return check_password_hash(self.password_hash, raw_password)
+
+    # Not implemented yet...
+    def change_password(self, old_pw, new_pw):
+        if not self.check_password(old_pw):
+            raise ValueError("Wrong password!")
+        self.set_password(new_pw)
     
-    #____Profile_____
+    #____Profile_____ (No UI for this yet...)
     def update_email(self, new_email):
         new_email = (new_email or "").strip().lower()
         if "@" not in new_email or "." not in new_email.split("@")[-1]:
