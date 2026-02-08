@@ -12,34 +12,68 @@ function getRandomColor() {
     return colors[Math.floor(Math.random() * colors.length)];
 }
 
-function createNewGroup() {
+// Create a new group column from a provided title (used by modal confirm)
+// holds data URL of selected photo while modal is open
+let _selectedGroupImageData = null;
+
+// Create a new group column from a provided title (used by modal confirm)
+function createGroupFromTitle(groupTitle, imageDataUrl, saveToStorage = true, color = null, id = null) {
+    if (!groupTitle) return;
     const groupCard = document.createElement('div');
     groupCard.className = 'col-lg-3 col-md-6 align-self-center mb-30 trending-items adv';
+
+    // attach id if provided (used for storage lookup)
+    if (id) groupCard.dataset.groupId = id;
 
     const itemDiv = document.createElement('div');
     itemDiv.className = 'item';
 
     const thumbnailDiv = document.createElement('div');
     thumbnailDiv.className = 'thumb thumb-color';
-    thumbnailDiv.style.backgroundColor = getRandomColor();
+    if (imageDataUrl) {
+        thumbnailDiv.style.backgroundImage = `url(${imageDataUrl})`;
+        thumbnailDiv.style.backgroundSize = 'cover';
+        thumbnailDiv.style.backgroundPosition = 'center';
+    } else {
+        if (color) thumbnailDiv.style.backgroundColor = color;
+        else thumbnailDiv.style.backgroundColor = getRandomColor();
+    }
 
     const downContent = document.createElement('div');
     downContent.className = 'down-content';
 
     const category = document.createElement('span');
     category.className = 'category';
-    category.innerHTML = '<i class="fa fa-person"></i> x members';
+    category.innerHTML = '<i class="fa fa-person"></i> 1 members';
 
     const title = document.createElement('h4');
-    title.textContent = 'Group Title';
+    title.textContent = groupTitle;
 
     const linkButton = document.createElement('a');
-    linkButton.href = 'product-details.html';
+    linkButton.href = 'news-group.html';
     linkButton.innerHTML = 'Open <i class="fa fa-arrow-right"></i>';
+
+    // Leave button
+    const leaveBtn = document.createElement('button');
+    leaveBtn.type = 'button';
+    leaveBtn.className = 'leave-group';
+    leaveBtn.textContent = 'Leave';
+    leaveBtn.addEventListener('click', function (ev) {
+        ev.preventDefault();
+        const col = leaveBtn.closest('.trending-items');
+        if (!col) return;
+        const gid = col.dataset.groupId || null;
+        col.remove();
+        if (gid) {
+            const groups = getSavedGroups().filter(g => g.id !== gid);
+            saveGroups(groups);
+        }
+    });
 
     downContent.appendChild(category);
     downContent.appendChild(title);
     downContent.appendChild(linkButton);
+    downContent.appendChild(leaveBtn);
 
     itemDiv.appendChild(thumbnailDiv);
     itemDiv.appendChild(downContent);
@@ -60,7 +94,7 @@ function createNewGroup() {
     }
 
     let lastRow = rows[rows.length - 1];
-        const cols = lastRow.querySelectorAll(':scope > [class*="col-"]').length;
+    const cols = lastRow.querySelectorAll(':scope > [class*="col-"]').length;
 
     // Bootstrap large screen: 4 columns per row (col-lg-3) -> create new row when full
     if (cols >= 4) {
@@ -72,6 +106,79 @@ function createNewGroup() {
 
     // Insert card immediately (no animations)
     lastRow.appendChild(groupCard);
+
+    // Save to localStorage if requested
+    if (saveToStorage) {
+        const colorUsed = imageDataUrl ? null : thumbnailDiv.style.backgroundColor || color || null;
+        const groups = getSavedGroups();
+        const newId = id || (Date.now().toString(36) + Math.floor(Math.random() * 1000).toString(36));
+        // ensure groupCard has the id
+        groupCard.dataset.groupId = newId;
+        groups.push({ id: newId, title: groupTitle, imageDataUrl: imageDataUrl || null, color: colorUsed });
+        saveGroups(groups);
+    }
+}
+
+function getSavedGroups() {
+    try {
+        const raw = localStorage.getItem('notable_groups');
+        if (!raw) return [];
+        return JSON.parse(raw) || [];
+    } catch (e) { return []; }
+}
+
+function saveGroups(arr) {
+    try { localStorage.setItem('notable_groups', JSON.stringify(arr)); } catch (e) { /* ignore */ }
+}
+
+function addGroupToStorage(obj) {
+    const groups = getSavedGroups();
+    groups.push(obj);
+    saveGroups(groups);
+}
+
+function loadSavedGroups() {
+    const groups = getSavedGroups();
+    if (!groups || !groups.length) return;
+    groups.forEach(g => {
+        // create DOM without re-saving; include stored id so leave can remove it
+        createGroupFromTitle(g.title, g.imageDataUrl || null, false, g.color || null, g.id || null);
+    });
+}
+
+// Show the create-group modal
+function showCreateGroupModal() {
+    const modal = document.getElementById('createGroupModal');
+    if (!modal) return;
+    modal.style.display = 'flex';
+    modal.setAttribute('aria-hidden', 'false');
+    const input = document.getElementById('new-group-title');
+    if (input) { input.value = ''; setTimeout(() => input.focus(), 0); }
+    // clear photo selection and preview when opening
+    const photoInput = document.getElementById('new-group-photo');
+    const previewDiv = document.getElementById('new-group-preview');
+    _selectedGroupImageData = null;
+    if (photoInput) photoInput.value = '';
+    if (previewDiv) { previewDiv.style.display = 'none'; previewDiv.style.backgroundImage = ''; }
+}
+
+// Hide the create-group modal
+function hideCreateGroupModal() {
+    const modal = document.getElementById('createGroupModal');
+    if (!modal) return;
+    modal.style.display = 'none';
+    modal.setAttribute('aria-hidden', 'true');
+    // clear any selected image when closing
+    _selectedGroupImageData = null;
+    const photoInput = document.getElementById('new-group-photo');
+    const previewDiv = document.getElementById('new-group-preview');
+    if (photoInput) photoInput.value = '';
+    if (previewDiv) { previewDiv.style.display = 'none'; previewDiv.style.backgroundImage = ''; }
+}
+
+// Click handler attached to the + button — opens modal
+function createNewGroup() {
+    showCreateGroupModal();
 }
 
 function joinGroup(e) {
@@ -103,38 +210,44 @@ function joinGroup(e) {
         lastRow = newRow;
     }
 
-    // Create a clean clone (preserve classes and inner HTML) to avoid layout issues
-    const newCol = document.createElement('div');
-    newCol.className = card.className;
-    newCol.innerHTML = card.innerHTML;
+    // Extract title and thumbnail info from original card
+    const titleEl = card.querySelector('h4');
+    const titleText = titleEl ? titleEl.textContent.trim() : 'Group';
+    const thumbEl = card.querySelector('.thumb');
+    
+    const members = card.querySelector('.category');
 
-    // Replace the Join button inside the clone with an Open link
-    const joinBtnInClone = newCol.querySelector('.join-group');
-    if (joinBtnInClone) {
-        const openLink = document.createElement('a');
-        openLink.href = 'product-details.html';
-        openLink.innerHTML = 'Open <i class="fa fa-arrow-right"></i>';
-        joinBtnInClone.replaceWith(openLink);
+    let imageDataUrl = null;
+    let color = null;
+    if (thumbEl) {
+        const cs = window.getComputedStyle(thumbEl);
+        const bg = cs.backgroundImage;
+        if (bg && bg !== 'none') {
+            const m = bg.match(/url\((?:"|')?(.*?)(?:"|')?\)/);
+            if (m && m[1]) imageDataUrl = m[1];
+        } else {
+            color = cs.backgroundColor || null;
+        }
     }
 
-    // Remove any inline animation styles from clone and original
-    newCol.style.transition = '';
-    newCol.style.transform = '';
-    newCol.style.opacity = '';
-    card.style.transition = '';
-    card.style.transform = '';
-    card.style.opacity = '';
+    // Create and save group entry (pass color if available)
+    createGroupFromTitle(titleText, imageDataUrl || null, true, color);
 
-    // Append the clone into Your Groups and remove the original from Discover More
-    lastRow.appendChild(newCol);
+    // Remove original card from Discover More
     card.remove();
 }
 
 document.addEventListener('DOMContentLoaded', function () {
-    // color existing thumbnails (skip any header-level button areas)
+    // Load persisted groups first
+    loadSavedGroups();
+
+    // color existing thumbnails (skip any header-level button areas or already-set covers)
     document.querySelectorAll('.thumb-color').forEach(el => {
         // don't recolor if it's a special button area (no down-content present)
-        if (!el.closest('.create-new-group-btn') ) {
+        // also skip if an inline background-image or background-color is already set
+        const hasInlineBgImage = el.style && el.style.backgroundImage && el.style.backgroundImage !== 'none';
+        const hasInlineBgColor = el.style && el.style.backgroundColor && el.style.backgroundColor !== '';
+        if (!el.closest('.create-new-group-btn') && !hasInlineBgImage && !hasInlineBgColor) {
             el.style.backgroundColor = getRandomColor();
         }
     });
@@ -143,4 +256,47 @@ document.addEventListener('DOMContentLoaded', function () {
     if (btn) btn.addEventListener('click', createNewGroup);
     // wire up existing Join Group buttons
     document.querySelectorAll('.join-group').forEach(b => b.addEventListener('click', joinGroup));
+
+    // Modal controls
+    const modal = document.getElementById('createGroupModal');
+    const confirmBtn = document.getElementById('confirm-create-group');
+    const cancelBtn = document.getElementById('cancel-create-group');
+    const titleInput = document.getElementById('new-group-title');
+    const photoInput = document.getElementById('new-group-photo');
+    const previewDiv = document.getElementById('new-group-preview');
+
+    if (confirmBtn && titleInput) {
+        confirmBtn.addEventListener('click', function () {
+            const val = titleInput.value.trim();
+            if (!val) { titleInput.focus(); return; }
+            // use selected image data if present
+            createGroupFromTitle(val, _selectedGroupImageData);
+            // clear selected image after creation
+            _selectedGroupImageData = null;
+            hideCreateGroupModal();
+        });
+        // allow Enter to confirm
+        titleInput.addEventListener('keydown', function (ev) {
+            if (ev.key === 'Enter') confirmBtn.click();
+        });
+    }
+    // wire up photo input preview
+    if (photoInput && previewDiv) {
+        photoInput.addEventListener('change', function () {
+            const f = photoInput.files && photoInput.files[0];
+            if (!f) { _selectedGroupImageData = null; previewDiv.style.display = 'none'; previewDiv.style.backgroundImage = ''; return; }
+            const reader = new FileReader();
+            reader.onload = function (ev) {
+                _selectedGroupImageData = ev.target.result;
+                previewDiv.style.backgroundImage = `url(${_selectedGroupImageData})`;
+                previewDiv.style.display = 'block';
+            };
+            reader.readAsDataURL(f);
+        });
+    }
+    if (cancelBtn) cancelBtn.addEventListener('click', function () { _selectedGroupImageData = null; hideCreateGroupModal(); });
+    if (modal) {
+        const overlay = modal.querySelector('.cg-modal-overlay');
+        if (overlay) overlay.addEventListener('click', hideCreateGroupModal);
+    }
 });

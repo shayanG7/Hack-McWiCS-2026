@@ -159,6 +159,10 @@ body {
 
 .create-new-group-btn:hover { background-color: #0071f8; }
 
+#new-group-photo {
+  border: none;
+}
+
 .section-heading h2 {
   font-size: 36px;
   font-weight: 700;
@@ -1732,3 +1736,40 @@ body {
 @media (max-width: 1200px) {
   
 }
+
+/* Create Group modal styles */
+.cg-modal { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; z-index: 9999; }
+.cg-modal[aria-hidden="true"] { pointer-events: none; }
+.cg-modal-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.5); }
+.cg-modal-content { position: relative; background: #fff; border-radius: 12px; width: 420px; max-width: calc(100% - 40px); padding: 18px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); z-index: 2; }
+.cg-modal-header h3 { margin: 0 0 8px 0; font-size: 20px; }
+.cg-modal-body { margin-bottom: 12px; }
+.cg-modal-body label { display: block; font-size: 13px; color: #555; margin-bottom: 6px; }
+.cg-modal-body input { width: 100%; height: 40px; padding: 0 12px; border-radius: 8px; border: 1px solid #e6e6e6; font-size: 14px; }
+.cg-modal-footer { display: flex; gap: 8px; justify-content: flex-end; }
+.btn-cancel, .btn-confirm { height: 40px; padding: 0 14px; border-radius: 8px; border: none; cursor: pointer; font-weight: 600; }
+.btn-cancel { background: #f1f1f1; color: #333; }
+.btn-confirm { background: #ee626b; color: #fff; }
+.btn-confirm:hover { background: #0071f8; }
+
+/* modal preview */
+.cg-preview { margin-top: 10px; width: 100%; height: 120px; border-radius: 8px; background-color: #f6f6f6; background-size: cover; background-position: center; display: none; }
+.cg-modal-body input[type="file"] { margin-top: 6px; }
+
+/* Leave button in your groups */
+.trending-box .item .down-content .leave-group {
+  /* position: absolute; */
+  /* display: inline-block; */
+  text-align: center;
+  line-height: 36px;
+  width: 80px;
+  height: 36px;
+  background-color: #f1f1f1;
+  color: #333;
+  border-radius: 8px;
+  border: none;
+  right: 150px;
+  bottom: 25px;
+  cursor: pointer;
+}
+.trending-box .item .down-content .leave-group:hover { background-color: #e0e0e0; }
