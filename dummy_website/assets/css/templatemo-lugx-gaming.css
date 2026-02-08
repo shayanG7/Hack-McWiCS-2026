@@ -81,6 +81,7 @@ html, body {
   -ms-text-size-adjust: 100%;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: #fffae9;
 }
 
 a {
@@ -92,6 +93,10 @@ h1, h2, h3, h4, h5, h6 {
   margin-top: 0px;
   margin-bottom: 0px;
   font-weight: 700;
+}
+
+h4 {
+  font-size: 33px;
 }
 
 ul {
@@ -285,7 +290,8 @@ Header Style
 */
 
 .background-header {
-  background-color: #0071f8 !important;
+  background: #2A7B9B !important;
+  background: linear-gradient(90deg,rgb(6, 91, 122) 0%, rgb(48, 185, 83) 100%) !important;
   border-radius: 0px 0px 25px 25px;
   height: 80px!important;
   position: fixed!important;
@@ -651,7 +657,7 @@ Banner Style
 */
 
 .main-banner {
-  background-image: url(../images/banner-bg.jpg);
+  /* background-image: url(../images/banner-bg.jpg); */
   border-radius: 0px 0px 150px 150px;
   background-position: center bottom;
   background-repeat: no-repeat;
@@ -1113,10 +1119,11 @@ Footer Style
 
 footer {
   margin-top: 150px;
-  background-color: #0071f8;
+  background: #2A7B9B;
+  background: linear-gradient(90deg,rgb(6, 91, 122) 0%, rgb(48, 185, 83) 100%) !important;
   background-repeat: no-repeat;
   background-size: cover;
-  background-image: url(../images/footer-bg.jpg);
+  /* background-image: url(../images/footer-bg.jpg); */
   min-height: 150px;
   border-radius: 150px 150px 0px 0px;
 }
@@ -1148,13 +1155,15 @@ Page Header Style
 */
 
 .page-heading {
-  background-image: url(../images/page-heading-bg.jpg);
+  /* background-image: url(../images/page-heading-bg.jpg); */
+  background: #2A7B9B;
+  background: linear-gradient(90deg,rgb(6, 91, 122) 0%, rgb(48, 185, 83) 100%) !important;
   border-radius: 0px 0px 150px 150px;
   background-position: center bottom;
   background-repeat: no-repeat;
   background-size: cover;
-  padding: 200px 0px 100px 0px;
-  text-align: center;
+  padding: 80px 0px 10px 0px;
+  text-align: left;
 }
 
 .page-heading span {
@@ -1168,7 +1177,7 @@ Page Header Style
 }
 
 .page-heading h3 {
-  font-size: 48px;
+  font-size: 63px;
   text-transform: uppercase;
   color: #fff;
   margin-top: 20px;
@@ -1230,8 +1239,38 @@ Shop Page Style
 
 .trending-box .item .thumb {
   position: relative;
-  border-radius: 25px;
+  border-radius: 25px 15px 0px 0px;
   overflow: hidden;
+  width: 100%;
+  aspect-ratio: 2;
+}
+
+.trending-box .new-group {
+  aspect-ratio: 1;
+  border: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 150px;
+  height: 150px;
+  margin: 10px;
+  border-radius: 15px;
+  background-color: #aed3ff;
+}
+
+.trending-box .new-group h4 {
+  font-size: 80px;
+  color: #fffae9;
+  margin: 0;
+  line-height: 1;
+}
+
+.trending-box .new-group h5 {
+  font-size: 13px;
+  color: #fffae9;
+  margin: 10px 0 0 0;
+  text-align: center;
 }
 
 .trending-box .item span.price em {
@@ -1278,11 +1317,11 @@ Shop Page Style
   display: inline-block;
   text-align: center;
   line-height: 40px;
-  width: 40px;
-  height: 40px;
+  width: 130px;
+  height: auto;
   background-color: #ee626b;
   color: #fff;
-  border-radius: 50%;
+  border-radius: 8px;
   right: 25px;
   bottom: 25px;
   transition: all .3s;
@@ -1390,7 +1429,8 @@ Single Page Style
   display: inline;
 }
 
-.single-product form button {
+.single-product form button,
+.clear-posts-button {
   display: inline-block;
   height: 50px;
   line-height: 50px;
@@ -1409,7 +1449,8 @@ Single Page Style
   margin-right: 5px;
 }
 
-.single-product form button:hover {
+.single-product form button:hover,
+.clear-posts-button:hover {
   background-color: #0071f8;
 }
 
