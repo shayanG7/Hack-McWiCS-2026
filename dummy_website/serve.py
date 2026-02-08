@@ -2,7 +2,7 @@ import http.server
 import os
 
 PORT = 8000
-DIRECTORY = os.path.join(os.path.dirname(__file__), "dummy_website")
+DIRECTORY = os.path.join(os.path.dirname(__file__))
 
 class Handler(http.server.SimpleHTTPRequestHandler):
     def __init__(self, *args, **kwargs):
