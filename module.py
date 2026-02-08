@@ -58,6 +58,15 @@ class NewsGroup(db.Model):
     def to_summary(self):
         """Return a summary string representation of the group."""
         return f"{self.name} ({self.category}) - {len(self.members)} members, {len(self.posts)} posts"
+    
+    def set_prompt(self):
+        """Generate and set a weekly prompt for the group using Gemini AI."""
+        from backend.weekly_prompt import generate_weekly_prompt
+        
+        generated_prompt = generate_weekly_prompt(self.category, self.name)
+        self.prompt_of_the_week = generated_prompt
+        db.session.commit()
+        return generated_prompt
 
 # Post
 class Post(db.Model):

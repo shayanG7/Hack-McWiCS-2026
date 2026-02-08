@@ -31,15 +31,6 @@ class NewsGroup:
             self.category = new_category
         db.session.commit()
 
-    # Temporary function --> Will be replaced with GeminiAPI
-    def set_prompt(self, new_prompt):
-        """Set or update the weekly prompt for the group."""
-        if not new_prompt:
-            return False
-        self.prompt_of_the_week = new_prompt
-        db.session.commit()
-        return True
-
     def add_member(self, user):
         """Add a user to a group."""
         if user in self.members:
