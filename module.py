@@ -56,8 +56,9 @@ class Post(db.Model):
     title = db.Column(db.String(200), nullable=False)
     content = db.Column(db.Text, nullable=False)
     timestamp = db.Column(db.DateTime, default=datetime.utcnow)
-    
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    #is_published = db.Column(db.Boolean, default=False) # Draft or Published
+
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False) # Author
     group_id = db.Column(db.Integer, db.ForeignKey('news_group.id'), nullable=False)
 
     def to_dict(self):
@@ -66,7 +67,30 @@ class Post(db.Model):
             'title': self.title,
             'content': self.content,
             'author': self.author.username,
-            'timestamp': self.timestamp.isoformat()
+            'timestamp': self.timestamp.isoformat(),
+          #  'is_published': self.is_published
         }
+    
+    @classmethod
+    def create(cls, title, content, user_id, group_id):
+        """Create and publish a new post."""
+        post = cls(
+            title=title,
+            content=content,
+            user_id=user_id,
+            group_id=group_id
+        )
+        db.session.add(post)
+        db.session.commit()
+        return post
+    
+    def edit_content(self, new_content=None, new_title=None):
+        """Edit the content and title of the post with validation."""
+        if new_content is not None:
+            self.content = new_content
+        if new_title is not None:
+            self.title = new_title
+        self.timestamp = datetime.utcnow()
+        db.session.commit()
     
     
