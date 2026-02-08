@@ -5,7 +5,6 @@ def __init__(self, title, content, user_id, group_id):
         self.user_id = user_id
         self.group_id = group_id
         self.timestamp = datetime.utcnow()
-       # self.is_published = False
 
 # Updates Post with optional new content and title, and updates the timestamp
 def edit_content(self, new_content=None, new_title=None):
@@ -40,5 +39,4 @@ def to_dict(self):
         'content': self.content,
         'author': self.author.username,
         'timestamp': self.timestamp.isoformat(),
-        'is_published': self.is_published
     }
