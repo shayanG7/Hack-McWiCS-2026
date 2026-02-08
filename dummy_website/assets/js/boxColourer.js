@@ -20,9 +20,10 @@ let _selectedGroupImageData = null;
 function createGroupFromTitle(groupTitle, imageDataUrl, saveToStorage = true, color = null, id = null, tags = '', prompt = '') {
     if (!groupTitle) return;
     const groupId = id || (Date.now().toString(36) + Math.floor(Math.random() * 1000).toString(36));
+    
     const groupCard = document.createElement('div');
     groupCard.className = 'col-lg-3 col-md-6 align-self-center mb-30 trending-items adv';
-
+    
     // attach id if provided (used for storage lookup)
     groupCard.dataset.groupId = groupId;
 
@@ -31,6 +32,7 @@ function createGroupFromTitle(groupTitle, imageDataUrl, saveToStorage = true, co
 
     const thumbnailDiv = document.createElement('div');
     thumbnailDiv.className = 'thumb thumb-color';
+    
     if (imageDataUrl) {
         thumbnailDiv.style.backgroundImage = `url(${imageDataUrl})`;
         thumbnailDiv.style.backgroundSize = 'cover';
@@ -44,12 +46,13 @@ function createGroupFromTitle(groupTitle, imageDataUrl, saveToStorage = true, co
     downContent.className = 'down-content';
 
     const category = document.createElement('span');
-    category.className = 'category';
+    category.className = 'category'; //members
     category.innerHTML = '<i class="fa fa-person"></i> 1 members';
 
     const title = document.createElement('h4');
     title.textContent = groupTitle;
 
+    //open button
     const linkButton = document.createElement('a');
     linkButton.href = `news-group.html?groupId=${encodeURIComponent(groupId)}`;
     linkButton.innerHTML = 'Open <i class="fa fa-arrow-right"></i>';
@@ -64,14 +67,16 @@ function createGroupFromTitle(groupTitle, imageDataUrl, saveToStorage = true, co
         const col = leaveBtn.closest('.trending-items');
         if (!col) return;
         const gid = col.dataset.groupId || null;
-        col.remove();
+        // move back to Discover More
+        moveGroupToDiscover(col);
         if (gid) {
             const groups = getSavedGroups().filter(g => g.id !== gid);
             saveGroups(groups);
         }
     });
 
-    downContent.appendChild(category);
+    //attatching everything to groupCard
+    downContent.appendChild(category); //members
     downContent.appendChild(title);
     downContent.appendChild(linkButton);
     downContent.appendChild(leaveBtn);
@@ -81,21 +86,22 @@ function createGroupFromTitle(groupTitle, imageDataUrl, saveToStorage = true, co
 
     groupCard.appendChild(itemDiv);
 
-    // Find container and the last trending row
+    // Find Your Groups
     const container = document.querySelector('.section.trending .container .your-groups');
     if (!container) return;
 
+    //rows = row trending box (one entire row)
     let rows = container.querySelectorAll('.row.trending-box');
     if (rows.length === 0) {
         // create initial row if missing
         const newRow = document.createElement('div');
         newRow.className = 'row trending-box';
-        container.appendChild(newRow);
-        rows = container.querySelectorAll('.row.trending-box');
+        container.appendChild(newRow); //container = Your Groups
+        rows = container.querySelectorAll('.row.trending-box'); //make new row, reassign rows
     }
 
     let lastRow = rows[rows.length - 1];
-    const cols = lastRow.querySelectorAll(':scope > [class*="col-"]').length;
+    const cols = lastRow.querySelectorAll('.trending-items').length;
 
     // Bootstrap large screen: 4 columns per row (col-lg-3) -> create new row when full
     if (cols >= 4) {
@@ -163,13 +169,16 @@ function loadSavedGroups() {
 function showCreateGroupModal() {
     const modal = document.getElementById('createGroupModal');
     if (!modal) return;
+
     modal.style.display = 'flex';
     modal.setAttribute('aria-hidden', 'false');
     const input = document.getElementById('new-group-title');
+    //making sure its not empty
     if (input) { input.value = ''; setTimeout(() => input.focus(), 0); }
     // clear photo selection and preview when opening
     const photoInput = document.getElementById('new-group-photo');
     const previewDiv = document.getElementById('new-group-preview');
+
     _selectedGroupImageData = null;
     if (photoInput) photoInput.value = '';
     if (previewDiv) { previewDiv.style.display = 'none'; previewDiv.style.backgroundImage = ''; }
@@ -196,9 +205,11 @@ function createNewGroup() {
 
 function joinGroup(e) {
     // `e` is the event when used as an event handler; support both direct call and event callback
+    //if its e.currentTarget, or if its a joinGroup button
     const btn = (e && e.currentTarget) ? e.currentTarget : (this && this.classList && this.classList.contains('join-group')) ? this : null;
     if (!btn) return;
-
+    
+    //box
     const card = btn.closest('.trending-items');
     if (!card) return;
 
@@ -209,13 +220,15 @@ function joinGroup(e) {
     let rows = container.querySelectorAll('.row.trending-box');
     if (rows.length === 0) {
         const newRow = document.createElement('div');
-        newRow.className = 'row trending-box';
+        newRow.className = 'row trending-box'; //row trending-box is a row
         container.appendChild(newRow);
         rows = container.querySelectorAll('.row.trending-box');
     }
 
     let lastRow = rows[rows.length - 1];
-    const cols = lastRow.querySelectorAll(':scope > [class*="col-"]').length;
+    const cols = lastRow.querySelectorAll('.trending-items').length;
+
+    
     if (cols >= 4) {
         const newRow = document.createElement('div');
         newRow.className = 'row trending-box';
@@ -224,14 +237,11 @@ function joinGroup(e) {
     }
 
     // Extract title and thumbnail info from original card
-    const titleEl = card.querySelector('h4');
-    const titleText = titleEl ? titleEl.textContent.trim() : 'Group';
+    const titleText = card.querySelector('h4').textContent;
     const thumbEl = card.querySelector('.thumb');
-    
-    const members = card.querySelector('.category');
-
     let imageDataUrl = null;
     let color = null;
+
     if (thumbEl) {
         const cs = window.getComputedStyle(thumbEl);
         const bg = cs.backgroundImage;
@@ -251,6 +261,108 @@ function joinGroup(e) {
 
     // Remove original card from Discover More
     card.remove();
+}
+
+// Move a group column element back into the Discover More rows
+function moveGroupToDiscover(colElement) {
+    if (!colElement) return;
+
+    // extract title and thumbnail info
+    const titleText = colElement.querySelector('h4').textContent;
+    const thumbEl = colElement.querySelector('.thumb');
+    let imageDataUrl = null;
+    let color = null;
+
+    if (thumbEl) {
+        const cs = window.getComputedStyle(thumbEl);
+        const bg = cs.backgroundImage;
+        if (bg && bg !== 'none') {
+            const m = bg.match(/url\((?:"|')?(.*?)(?:"|')?\)/);
+            if (m && m[1]) imageDataUrl = m[1];
+        } else {
+            color = cs.backgroundColor || null;
+        }
+    }
+
+    // Build a discover-card column (similar structure to original discover items)
+    const discoverCol = document.createElement('div'); //discoverCol is the box
+    discoverCol.className = 'col-lg-3 col-md-6 align-self-center mb-30 trending-items col-md-6 adv';
+
+    const itemDiv = document.createElement('div');
+    itemDiv.className = 'item';
+
+    const thumbnailDiv = document.createElement('div');
+    thumbnailDiv.className = 'thumb thumb-color';
+    
+    if (imageDataUrl) {
+        thumbnailDiv.style.backgroundImage = `url(${imageDataUrl})`;
+        thumbnailDiv.style.backgroundSize = 'cover';
+        thumbnailDiv.style.backgroundPosition = 'center';
+    } else if (color) {
+        thumbnailDiv.style.backgroundColor = color;
+    } else {
+        thumbnailDiv.style.backgroundColor = getRandomColor();
+    }
+
+    const downContent = document.createElement('div');
+    downContent.className = 'down-content';
+
+    const category = document.createElement('span'); //members
+    category.className = 'category';
+    category.innerHTML = '<i class="fa fa-person"></i> x members';
+
+    const title = document.createElement('h4'); //title
+    title.textContent = titleText;
+
+    //join button
+    const joinBtn = document.createElement('button');
+    joinBtn.type = 'button';
+    joinBtn.className = 'join-group';
+    joinBtn.innerHTML = 'Join Group <i class="fa fa-shopping-bag"></i>';
+    joinBtn.addEventListener('click', joinGroup);
+
+    //add everythng to discoverCol (the box)
+    downContent.appendChild(category);
+    downContent.appendChild(title);
+    downContent.appendChild(joinBtn);
+
+    itemDiv.appendChild(thumbnailDiv);
+    itemDiv.appendChild(downContent);
+    discoverCol.appendChild(itemDiv);
+
+    // append into the Discover More rows — find last discover row (not inside .your-groups)
+    const container = document.querySelector('.section.trending .container');
+    if (!container) return;
+
+    
+    const allRows = Array.from(container.querySelectorAll('.row.trending-box')); //rows
+    // filter rows that are not inside .your-groups (these are the Discover rows)
+    const discoverRows = allRows.filter(r => r.closest('.your-groups') === null && r.querySelector('.join-group'));
+    let appendRow = null;
+
+    
+    if (discoverRows.length > 0) {
+        appendRow = discoverRows[discoverRows.length - 1]; //last row
+        const cols = appendRow.querySelectorAll('.trending-items').length;
+        // if last discover row is full, create a new one after it
+        if (cols >= 4) {
+            const newRow = document.createElement('div');
+            newRow.className = 'row trending-box';
+            container.appendChild(newRow);
+            // appendRow.parentNode.insertBefore(newRow, appendRow.nextSibling);
+            appendRow = newRow;
+        }
+    } else {
+        // no existing discover rows — create one at end of container
+        appendRow = document.createElement('div');
+        appendRow.className = 'row trending-box';
+        container.appendChild(appendRow);
+    }
+
+    appendRow.appendChild(discoverCol);
+
+    // remove the original card from Your Groups (if still present)
+    if (colElement && colElement.parentNode) colElement.parentNode.removeChild(colElement);
 }
 
 document.addEventListener('DOMContentLoaded', function () {
