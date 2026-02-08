@@ -42,13 +42,22 @@ class NewsGroup(db.Model):
     # Post 
     posts = db.relationship('Post', backref='group', lazy=True)
 
-    def to_dict(self):
-        return {
+    def to_dict(self, include_members=False, include_posts=False):
+        result = {
             'id': self.id,
             'name': self.name,
             'category': self.category,
             'prompt': self.prompt_of_the_week
         }
+        if include_members:
+            result['members'] = [member.to_dict() for member in self.members]
+        if include_posts:
+            result['posts'] = [post.to_dict() for post in self.posts]
+        return result
+    
+    def to_summary(self):
+        """Return a summary string representation of the group."""
+        return f"{self.name} ({self.category}) - {len(self.members)} members, {len(self.posts)} posts"
 
 # Post
 class Post(db.Model):

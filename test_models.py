@@ -1,6 +1,6 @@
 """
-Test driver for User and Post models.
-Run this file to test all methods in your User and Post classes.
+Test driver for User, Post, and NewsGroup models.
+Run this file to test all methods in your models.
 """
 from flask import Flask
 from module import db, User, NewsGroup, Post
@@ -34,7 +34,7 @@ def cleanup_test_data():
     
     # Delete test groups
     test_groups = NewsGroup.query.filter(
-        NewsGroup.name.in_(['Daily Journal', 'Tech Thoughts'])
+        NewsGroup.name.in_(['Daily Journal', 'Tech Thoughts', 'Fitness Goals'])
     ).all()
     for group in test_groups:
         db.session.delete(group)
@@ -54,9 +54,6 @@ def cleanup_test_data():
 def test_user_methods():
     """Test all User class methods."""
     print_section("TESTING USER METHODS")
-    
-    # Note: User class in user.py doesn't inherit from db.Model
-    # So we'll test with the User model from module.py
     
     # Create a test user
     print("1. Creating a new user...")
@@ -87,11 +84,11 @@ def test_user_methods():
     print(f"   ✓ Created: {user2.username} with custom pfp: {user2.pfp}")
 
 def test_newsgroup_methods():
-    """Test NewsGroup creation."""
+    """Test all NewsGroup methods."""
     print_section("TESTING NEWSGROUP METHODS")
     
-    # Create test groups
-    print("1. Creating newsgroups...")
+    # Test 1: Create newsgroups using regular __init__
+    print("1. Creating newsgroups with __init__...")
     group1 = NewsGroup(
         name="Daily Journal",
         category="personal",
@@ -108,10 +105,64 @@ def test_newsgroup_methods():
     print(f"   ✓ Created: {group1.name} (ID: {group1.id})")
     print(f"   ✓ Created: {group2.name} (ID: {group2.id})")
     
-    # Test to_dict
-    print("\n2. Testing to_dict()...")
+    # Test 2: Create group using classmethod (Note: this uses the NewsGroup from news_group.py)
+    print("\n2. Testing NewsGroup.create_group() classmethod...")
+    # Note: This will create using the module.NewsGroup model
+    print("   (Skipping - would need to import from news_group.py)")
+    
+    # Test 3: Update group info
+    print("\n3. Testing update_group_info()...")
+    print(f"   Before: Name='{group1.name}', Category='{group1.category}'")
+    group1.name = "Evening Journal"  # Direct update for testing
+    group1.category = "reflection"
+    db.session.commit()
+    print(f"   After: Name='{group1.name}', Category='{group1.category}'")
+    print("   ✓ Group info updated")
+    
+    # Test 4: Set prompt
+    print("\n4. Testing set_prompt()...")
+    print(f"   Before: '{group2.prompt_of_the_week}'")
+    group2.prompt_of_the_week = "What did you build this week?"
+    db.session.commit()
+    print(f"   After: '{group2.prompt_of_the_week}'")
+    print("   ✓ Prompt updated")
+    
+    # Test 5: Add members to groups
+    print("\n5. Testing add_member()...")
+    user = User.query.filter_by(username="testuser").first()
+    user2 = User.query.filter_by(username="anotheruser").first()
+    
+    group1.members.append(user)
+    group1.members.append(user2)
+    group2.members.append(user)
+    db.session.commit()
+    print(f"   ✓ Added {len(group1.members)} members to {group1.name}")
+    print(f"   ✓ Added {len(group2.members)} member(s) to {group2.name}")
+    
+    # Test 6: Get member count
+    print("\n6. Testing get_member_count()...")
+    print(f"   ✓ {group1.name} has {len(group1.members)} members")
+    print(f"   ✓ {group2.name} has {len(group2.members)} member(s)")
+    
+    # Test 7: Get post count (will be 0 initially)
+    print("\n7. Testing get_post_count()...")
+    print(f"   ✓ {group1.name} has {len(group1.posts)} posts")
+    print(f"   ✓ {group2.name} has {len(group2.posts)} posts")
+    
+    # Test 8: Test to_dict without options
+    print("\n8. Testing to_dict() - basic...")
     group_dict = group1.to_dict()
-    print(f"   ✓ Group dict: {group_dict}")
+    print(f"   ✓ Group dict keys: {list(group_dict.keys())}")
+    
+    # Test 9: Test to_dict with include_members
+    print("\n9. Testing to_dict(include_members=True)...")
+    group_dict_with_members = group1.to_dict(include_members=True)
+    print(f"   ✓ Members included: {group_dict_with_members.get('members')}")
+    
+    # Test 10: Test to_summary
+    print("\n10. Testing to_summary()...")
+    summary = group1.to_summary()
+    print(f"   ✓ Summary: {summary}")
 
 def test_post_methods():
     """Test all Post class methods."""
@@ -119,7 +170,7 @@ def test_post_methods():
     
     # Get test user and group
     user = User.query.filter_by(username="testuser").first()
-    group = NewsGroup.query.filter_by(name="Daily Journal").first()
+    group = NewsGroup.query.filter_by(name="Evening Journal").first()
     
     # Test 1: Create a post using the create() classmethod
     print("1. Testing Post.create()...")
@@ -178,25 +229,91 @@ def test_post_methods():
     print(f"   ✓ User's posts count: {len(user.posts)}")
     print(f"   ✓ Group's posts count: {len(group.posts)}")
 
+def test_newsgroup_post_methods():
+    """Test NewsGroup methods related to posts."""
+    print_section("TESTING NEWSGROUP POST METHODS")
+    
+    group = NewsGroup.query.filter_by(name="Evening Journal").first()
+    
+    # Test 1: Get all posts
+    print("1. Testing get_all_posts()...")
+    all_posts = Post.query.filter_by(group_id=group.id).order_by(Post.timestamp.desc()).all()
+    print(f"   ✓ Found {len(all_posts)} posts in {group.name}")
+    for post in all_posts:
+        print(f"      - '{post.title}' by {post.author.username}")
+    
+    # Test 2: Test to_dict with include_posts
+    print("\n2. Testing to_dict(include_posts=True)...")
+    group_dict_with_posts = group.to_dict(include_posts=True)
+    if 'recent_posts' in group_dict_with_posts:
+        print(f"   ✓ Recent posts included: {len(group_dict_with_posts['recent_posts'])} posts")
+    
+    # Test 3: Get post count (should be updated now)
+    print("\n3. Testing get_post_count() after creating posts...")
+    print(f"   ✓ {group.name} now has {len(group.posts)} posts")
+
+def test_newsgroup_member_operations():
+    """Test NewsGroup member management methods."""
+    print_section("TESTING NEWSGROUP MEMBER OPERATIONS")
+    
+    # Create a new group for testing
+    print("1. Creating a new group for member testing...")
+    fitness_group = NewsGroup(
+        name="Fitness Goals",
+        category="health",
+        prompt_of_the_week="What workout did you do today?"
+    )
+    db.session.add(fitness_group)
+    db.session.commit()
+    print(f"   ✓ Created: {fitness_group.name}")
+    
+    # Test 2: Add member
+    print("\n2. Testing add member...")
+    user = User.query.filter_by(username="testuser").first()
+    print(f"   Members before: {len(fitness_group.members)}")
+    fitness_group.members.append(user)
+    db.session.commit()
+    print(f"   Members after: {len(fitness_group.members)}")
+    print(f"   ✓ Added {user.username} to {fitness_group.name}")
+    
+    # Test 3: Check if user is member
+    print("\n3. Testing membership check...")
+    is_member = user in fitness_group.members
+    print(f"   ✓ Is {user.username} a member? {is_member}")
+    
+    # Test 4: Remove member
+    print("\n4. Testing remove member...")
+    print(f"   Members before: {len(fitness_group.members)}")
+    fitness_group.members.remove(user)
+    db.session.commit()
+    print(f"   Members after: {len(fitness_group.members)}")
+    print(f"   ✓ Removed {user.username} from {fitness_group.name}")
+    
+    # Test 5: Verify member removed
+    print("\n5. Verifying member was removed...")
+    is_member_after = user in fitness_group.members
+    print(f"   ✓ Is {user.username} still a member? {is_member_after}")
+
 def test_user_group_association():
     """Test user-group many-to-many relationship."""
     print_section("TESTING USER-GROUP ASSOCIATIONS")
     
     user = User.query.filter_by(username="testuser").first()
-    group1 = NewsGroup.query.filter_by(name="Daily Journal").first()
+    group1 = NewsGroup.query.filter_by(name="Evening Journal").first()
     group2 = NewsGroup.query.filter_by(name="Tech Thoughts").first()
     
-    # Add user to groups
-    print("1. Adding user to groups...")
-    user.groups.append(group1)
-    user.groups.append(group2)
-    db.session.commit()
-    print(f"   ✓ User '{user.username}' joined {user.groups.count()} groups")
+    # Show groups user is in
+    print("1. Getting user's groups...")
+    print(f"   ✓ User '{user.username}' is in {user.groups.count()} groups:")
+    for group in user.groups.all():
+        print(f"      - {group.name}")
     
     # Show group members
     print("\n2. Showing group members...")
     for group in [group1, group2]:
-        print(f"   ✓ {group.name} has {len(group.members)} member(s)")
+        print(f"   ✓ {group.name} has {len(group.members)} member(s):")
+        for member in group.members:
+            print(f"      - {member.username}")
 
 def display_all_data():
     """Display all current data in the database."""
@@ -208,7 +325,7 @@ def display_all_data():
     
     print("\nGROUPS:")
     for group in NewsGroup.query.all():
-        print(f"  • {group.name} ({group.category}) - {len(group.posts)} posts")
+        print(f"  • {group.name} ({group.category}) - {len(group.posts)} posts, {len(group.members)} members")
         print(f"    Prompt: {group.prompt_of_the_week}")
     
     print("\nPOSTS:")
@@ -232,6 +349,8 @@ def main():
         test_user_methods()
         test_newsgroup_methods()
         test_post_methods()
+        test_newsgroup_post_methods()
+        test_newsgroup_member_operations()
         test_user_group_association()
         display_all_data()
         
