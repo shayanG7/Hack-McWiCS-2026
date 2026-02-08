@@ -1,8 +1,6 @@
 import google.genai as genai
 import os
 
-GEMINI_API_KEY = "AIzaSyCDnQlOxJjzwSuFPedjlruzJiL3jPzTTwA"
-
 def generate_weekly_prompt(category, group_name):
     """
     Use Gemini To generate a weekly discussion prompt for a news group based on its category and name.
