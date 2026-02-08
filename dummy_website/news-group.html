@@ -69,7 +69,8 @@ https://templatemo.com/tm-589-lugx-gaming
     <div class="container">
       <div class="row">
         <div class="col-lg-12">
-          <h3>News Group Name</h3>
+          <h3 id="group-title">News Group Name</h3>
+          <p id="group-tags" class="text-white-50 mb-0"></p>
         </div>
       </div>
     </div>
@@ -79,7 +80,7 @@ https://templatemo.com/tm-589-lugx-gaming
     <div class="container">
       <form class="row" action="#">
         <div class="col-lg-12">
-          <label for="share-thoughts" class="form-label d-block mb-2 pb-2 border-bottom">Response to Gemini Prompt Here</label>
+          <label for="share-thoughts" id="group-prompt" class="form-label d-block mb-2 pb-2 border-bottom">Response to Gemini Prompt Here</label>
           <textarea
             id="share-thoughts"
             name="share_thoughts"
@@ -141,7 +142,41 @@ https://templatemo.com/tm-589-lugx-gaming
       var postsList = document.getElementById("posts-list");
       var form = document.querySelector(".single-product form");
       var clearButton = document.getElementById("clear-posts");
-      var storageKey = "user_posts";
+      var titleEl = document.getElementById("group-title");
+      var tagsEl = document.getElementById("group-tags");
+      var promptEl = document.getElementById("group-prompt");
+
+      var params = new URLSearchParams(window.location.search);
+      var groupId = params.get("groupId") || "";
+      var storageKey = groupId ? "user_posts:" + groupId : "user_posts";
+
+      var getGroups = function () {
+        try {
+          var raw = localStorage.getItem("notable_groups");
+          if (!raw) return [];
+          return JSON.parse(raw) || [];
+        } catch (error) {
+          return [];
+        }
+      };
+
+      var applyGroupInfo = function (group) {
+        if (!group) return;
+        if (titleEl) titleEl.textContent = group.title || "News Group";
+        if (tagsEl) tagsEl.textContent = group.tags || "";
+        if (promptEl) {
+          promptEl.textContent = group.prompt || "Share a thought with your group.";
+        }
+        if (group.title) document.title = group.title;
+      };
+
+      if (groupId) {
+        var groups = getGroups();
+        var match = groups.find(function (g) {
+          return g && g.id === groupId;
+        });
+        applyGroupInfo(match);
+      }
 
       if (!textarea || !counter) {
         return;

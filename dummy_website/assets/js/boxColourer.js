@@ -17,13 +17,14 @@ function getRandomColor() {
 let _selectedGroupImageData = null;
 
 // Create a new group column from a provided title (used by modal confirm)
-function createGroupFromTitle(groupTitle, imageDataUrl, saveToStorage = true, color = null, id = null) {
+function createGroupFromTitle(groupTitle, imageDataUrl, saveToStorage = true, color = null, id = null, tags = '', prompt = '') {
     if (!groupTitle) return;
+    const groupId = id || (Date.now().toString(36) + Math.floor(Math.random() * 1000).toString(36));
     const groupCard = document.createElement('div');
     groupCard.className = 'col-lg-3 col-md-6 align-self-center mb-30 trending-items adv';
 
     // attach id if provided (used for storage lookup)
-    if (id) groupCard.dataset.groupId = id;
+    groupCard.dataset.groupId = groupId;
 
     const itemDiv = document.createElement('div');
     itemDiv.className = 'item';
@@ -50,7 +51,7 @@ function createGroupFromTitle(groupTitle, imageDataUrl, saveToStorage = true, co
     title.textContent = groupTitle;
 
     const linkButton = document.createElement('a');
-    linkButton.href = 'news-group.html';
+    linkButton.href = `news-group.html?groupId=${encodeURIComponent(groupId)}`;
     linkButton.innerHTML = 'Open <i class="fa fa-arrow-right"></i>';
 
     // Leave button
@@ -111,10 +112,14 @@ function createGroupFromTitle(groupTitle, imageDataUrl, saveToStorage = true, co
     if (saveToStorage) {
         const colorUsed = imageDataUrl ? null : thumbnailDiv.style.backgroundColor || color || null;
         const groups = getSavedGroups();
-        const newId = id || (Date.now().toString(36) + Math.floor(Math.random() * 1000).toString(36));
-        // ensure groupCard has the id
-        groupCard.dataset.groupId = newId;
-        groups.push({ id: newId, title: groupTitle, imageDataUrl: imageDataUrl || null, color: colorUsed });
+        groups.push({
+            id: groupId,
+            title: groupTitle,
+            imageDataUrl: imageDataUrl || null,
+            color: colorUsed,
+            tags: tags || '',
+            prompt: prompt || ''
+        });
         saveGroups(groups);
     }
 }
@@ -142,7 +147,15 @@ function loadSavedGroups() {
     if (!groups || !groups.length) return;
     groups.forEach(g => {
         // create DOM without re-saving; include stored id so leave can remove it
-        createGroupFromTitle(g.title, g.imageDataUrl || null, false, g.color || null, g.id || null);
+        createGroupFromTitle(
+            g.title,
+            g.imageDataUrl || null,
+            false,
+            g.color || null,
+            g.id || null,
+            g.tags || '',
+            g.prompt || ''
+        );
     });
 }
 
@@ -230,8 +243,11 @@ function joinGroup(e) {
         }
     }
 
+    const defaultTags = titleText ? `#${titleText.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9\-]/g, '')}` : '';
+    const defaultPrompt = titleText ? `Share one thing you love about ${titleText}.` : 'Share one thing you love about this group.';
+
     // Create and save group entry (pass color if available)
-    createGroupFromTitle(titleText, imageDataUrl || null, true, color);
+    createGroupFromTitle(titleText, imageDataUrl || null, true, color, null, defaultTags, defaultPrompt);
 
     // Remove original card from Discover More
     card.remove();
@@ -270,7 +286,10 @@ document.addEventListener('DOMContentLoaded', function () {
             const val = titleInput.value.trim();
             if (!val) { titleInput.focus(); return; }
             // use selected image data if present
-            createGroupFromTitle(val, _selectedGroupImageData);
+            const tagsInput = document.getElementById('new-group-tags');
+            const tagsValue = tagsInput ? tagsInput.value.trim() : '';
+            const promptText = `Share a recent discovery with ${val}.`;
+            createGroupFromTitle(val, _selectedGroupImageData, true, null, null, tagsValue, promptText);
             // clear selected image after creation
             _selectedGroupImageData = null;
             hideCreateGroupModal();
