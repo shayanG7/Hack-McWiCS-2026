@@ -102,4 +102,9 @@ class Post(db.Model):
         self.timestamp = datetime.utcnow()
         db.session.commit()
     
+    def delete(self):
+        """Delete the post from the database."""
+        db.session.delete(self)
+        db.session.commit()
+    
         

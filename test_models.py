@@ -228,6 +228,17 @@ def test_post_methods():
     print(f"   ✓ Post group: {post1.group.name}")
     print(f"   ✓ User's posts count: {len(user.posts)}")
     print(f"   ✓ Group's posts count: {len(group.posts)}")
+    
+    # Test 8: Test delete() method
+    print("\n8. Testing delete()...")
+    posts_before = Post.query.count()
+    print(f"   Before delete: {posts_before} posts in database")
+    
+    post2.delete()
+    posts_after = Post.query.count()
+    print(f"   After delete: {posts_after} posts in database")
+    print(f"   ✓ Successfully deleted post: '{post2.title}'")
+
 
 def test_newsgroup_post_methods():
     """Test NewsGroup methods related to posts."""
