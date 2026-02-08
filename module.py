@@ -57,6 +57,17 @@ class NewsGroup(db.Model):
     # Relationship with posts
     posts = db.relationship('Post', backref='group', lazy=True)
 
+    def create_group(cls, name, category, prompt_of_the_week=None):
+        """Create a new newsgroup."""
+        group = cls(
+            name=name,
+            category=category,
+            prompt_of_the_week=prompt_of_the_week
+        )
+        db.session.add(group)
+        db.session.commit()
+        return group
+
     # Member management methods (Not implemented yet...)
     def add_member(self, user):
         """Add a user to a group."""
