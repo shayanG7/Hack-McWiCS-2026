@@ -117,8 +117,8 @@ https://templatemo.com/tm-589-lugx-gaming
           <div class="item">
             <div class="thumb thumb-color"></div>
             <div class="down-content">
-              <span class="category"><i class="fa fa-person"></i> x members</span>
-              <h4>Group Title</h4>
+              <span class="category"><i class="fa fa-person"></i> 13 members</span>
+              <h4>Hiking Group</h4>
               <button class="join-group" type="button">Join Group <i class="fa fa-shopping-bag"></i></button> <!--JOIN GROUP BUTTON-->
             </div>
           </div>
@@ -128,8 +128,8 @@ https://templatemo.com/tm-589-lugx-gaming
           <div class="item">
             <div class="thumb thumb-color"></div>
             <div class="down-content">
-              <span class="category"><i class="fa fa-person"></i> x members</span>
-              <h4>Group Title</h4>
+              <span class="category"><i class="fa fa-person"></i> 9 members</span>
+              <h4>Cooking</h4>
               <button class="join-group" type="button">Join Group <i class="fa fa-shopping-bag"></i></button> <!--JOIN GROUP BUTTON-->
             </div>
           </div>
@@ -139,8 +139,8 @@ https://templatemo.com/tm-589-lugx-gaming
           <div class="item">
             <div class="thumb thumb-color"></div>
             <div class="down-content">
-              <span class="category"><i class="fa fa-person"></i> x members</span>
-              <h4>Group Title</h4>
+              <span class="category"><i class="fa fa-person"></i> 23 members</span>
+              <h4>Book Club</h4>
               <button class="join-group" type="button">Join Group <i class="fa fa-shopping-bag"></i></button> <!--JOIN GROUP BUTTON-->
             </div>
           </div>
@@ -161,6 +161,30 @@ https://templatemo.com/tm-589-lugx-gaming
   </footer>
 
   <!-- Scripts -->
+  <!-- Create Group Modal -->
+  <div id="createGroupModal" class="cg-modal" aria-hidden="true" style="display:none;">
+    <div class="cg-modal-overlay"></div>
+    <div class="cg-modal-content">
+      <div class="cg-modal-header">
+        <h3>Create New Group</h3>
+      </div>
+      <div class="cg-modal-body">
+        <label for="new-group-title">Group title</label>
+        <input id="new-group-title" type="text" placeholder="Enter group title" />
+
+        <label for="new-group-tags">Tags</label>
+        <input id="new-group-tags" type="text" placeholder="#what are you guys into" />
+
+        <label for="new-group-photo" style="margin-top:30px; display:block;">Cover photo (optional)</label>
+        <input id="new-group-photo" class="choose-file" type="file" accept="image/*" />
+        <div id="new-group-preview" class="cg-preview" aria-hidden="true"></div>
+      </div>
+      <div class="cg-modal-footer">
+        <button id="cancel-create-group" class="btn-cancel">Cancel</button>
+        <button id="confirm-create-group" class="btn-confirm">Create</button>
+      </div>
+    </div>
+  </div>
   <!-- Bootstrap core JavaScript -->
   <script src="vendor/jquery/jquery.min.js"></script>
   <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
