@@ -1,5 +1,4 @@
-function getRandomColor() {
-    const colors = [
+const colors = [
     '#F5E387', //yellow
     '#CBED79', //lime
     '#69A346', //green
@@ -9,6 +8,10 @@ function getRandomColor() {
     '#A34671', //pink
     ]
 
+const newGroupButton = document.querySelectorAll('.new-group');
+newGroupButton.addEventListener("click", createNewGroup());
+
+function getRandomColor() {
     const randomColor = colors[Math.floor(Math.random() * 7)];
     return randomColor;
 }
@@ -18,4 +21,8 @@ function applyRandomColour() {
     elements.forEach(element => {
         element.style.backgroundColor = getRandomColor();
     })
+}
+
+function createNewGroup() {
+    
 }
