@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
-    <title>Lugx Gaming Template - Contact Page</title>
+    <title>Notable | Account Information</title>
 
     <!-- Bootstrap core CSS -->
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -50,17 +50,12 @@ https://templatemo.com/tm-589-lugx-gaming
             <div class="col-12">
                 <nav class="main-nav">
                     <!-- ***** Logo Start ***** -->
-                    <a href="oldIndex.html" class="logo">
-                        <img src="assets/images/logo.png" alt="" style="width: 158px;">
-                    </a>
+                    <h3>catchprase</h3>
                     <!-- ***** Logo End ***** -->
                     <!-- ***** Menu Start ***** -->
                     <ul class="nav">
-                      <li><a href="oldIndex.html">Home</a></li>
-                      <li><a href="index.html">Our Shop</a></li>
-                      <li><a href="product-details.html">Product Details</a></li>
-                      <li><a href="contact.html" class="active">Contact Us</a></li>
-                      <li><a href="#">Sign In</a></li>
+                      <li><a href="index.html">Home</a></li>
+                      <li><a href="contact.html">Account</a></li>
                   </ul>   
                     <a class='menu-trigger'>
                         <span>Menu</span>
@@ -77,8 +72,8 @@ https://templatemo.com/tm-589-lugx-gaming
     <div class="container">
       <div class="row">
         <div class="col-lg-12">
-          <h3>Contact Us</h3>
-          <span class="breadcrumb"><a href="#">Home</a>  >  Contact Us</span>
+          <h3>Your Notable Account</h3>
+          <span class="breadcrumb"><a href="#">Home</a>  >  Account Information</span>
         </div>
       </div>
     </div>
@@ -87,65 +82,73 @@ https://templatemo.com/tm-589-lugx-gaming
   <div class="contact-page section">
     <div class="container">
       <div class="row">
-        <div class="col-lg-6 align-self-center">
-          <div class="left-text">
-            <div class="section-heading">
-              <h6>Contact Us</h6>
-              <h2>Say Hello!</h2>
+        <div class="col-lg-6">
+          <div class="p-4 border rounded">
+            <div class="section-heading mb-3">
+              <h6>Create Account</h6>
+              <h2>Sign Up</h2>
             </div>
-            <p>LUGX Gaming Template is based on the latest Bootstrap 5 CSS framework. This template is provided by TemplateMo and it is suitable for your gaming shop ecommerce websites. Feel free to use this for any purpose. Thank you.</p>
-            <ul>
-              <li><span>Address</span> Sunny Isles Beach, FL 33160, United States</li>
-              <li><span>Phone</span> +123 456 7890</li>
-              <li><span>Email</span> lugx@contact.com</li>
-            </ul>
+            <form id="signup-form" action="#" method="post">
+              <div class="row">
+                <div class="col-lg-6">
+                  <fieldset class="mb-3">
+                    <input type="text" name="first_name" id="first-name" placeholder="First Name" autocomplete="given-name" required>
+                  </fieldset>
+                </div>
+                <div class="col-lg-6">
+                  <fieldset class="mb-3">
+                    <input type="text" name="last_name" id="last-name" placeholder="Last Name" autocomplete="family-name" required>
+                  </fieldset>
+                </div>
+                <div class="col-lg-12">
+                  <fieldset class="mb-3">
+                    <input type="email" name="email" id="signup-email" placeholder="Email" autocomplete="email" required>
+                  </fieldset>
+                </div>
+                <div class="col-lg-12">
+                  <fieldset class="mb-3">
+                    <input type="password" name="password" id="signup-password" placeholder="Password" autocomplete="new-password" required>
+                  </fieldset>
+                </div>
+                <div class="col-lg-12">
+                  <fieldset class="mb-3">
+                    <input type="password" name="confirm_password" id="signup-confirm" placeholder="Confirm Password" autocomplete="new-password" required>
+                  </fieldset>
+                </div>
+                <div class="col-lg-12">
+                  <fieldset>
+                    <button type="submit" class="orange-button">Create Account</button>
+                  </fieldset>
+                </div>
+              </div>
+            </form>
           </div>
         </div>
         <div class="col-lg-6">
-          <div class="right-content">
-            <div class="row">
-              <div class="col-lg-12">
-                <div id="map">
-                  <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d12469.776493332698!2d-80.14036379941481!3d25.907788681148624!2m3!1f357.26927939317244!2f20.870722720054623!3f0!3m2!1i1024!2i768!4f35!3m3!1m2!1s0x88d9add4b4ac788f%3A0xe77469d09480fcdb!2sSunny%20Isles%20Beach!5e1!3m2!1sen!2sth!4v1642869952544!5m2!1sen!2sth" width="100%" height="325px" frameborder="0" style="border:0; border-radius: 23px;" allowfullscreen=""></iframe>
+          <div class="p-4 border rounded">
+            <div class="section-heading mb-3">
+              <h6>Welcome Back</h6>
+              <h2>Log In</h2>
+            </div>
+            <form id="login-form" action="#" method="post">
+              <div class="row">
+                <div class="col-lg-12">
+                  <fieldset class="mb-3">
+                    <input type="email" name="email" id="login-email" placeholder="Email" autocomplete="email" required>
+                  </fieldset>
+                </div>
+                <div class="col-lg-12">
+                  <fieldset class="mb-3">
+                    <input type="password" name="password" id="login-password" placeholder="Password" autocomplete="current-password" required>
+                  </fieldset>
+                </div>
+                <div class="col-lg-12">
+                  <fieldset>
+                    <button type="submit" class="orange-button">Log In</button>
+                  </fieldset>
                 </div>
               </div>
-              <div class="col-lg-12">
-                <form id="contact-form" action="" method="post">
-                  <div class="row">
-                    <div class="col-lg-6">
-                      <fieldset>
-                        <input type="name" name="name" id="name" placeholder="Your Name..." autocomplete="on" required>
-                      </fieldset>
-                    </div>
-                    <div class="col-lg-6">
-                      <fieldset>
-                        <input type="surname" name="surname" id="surname" placeholder="Your Surname..." autocomplete="on" required>
-                      </fieldset>
-                    </div>
-                    <div class="col-lg-6">
-                      <fieldset>
-                        <input type="text" name="email" id="email" pattern="[^ @]*@[^ @]*" placeholder="Your E-mail..." required="">
-                      </fieldset>
-                    </div>
-                    <div class="col-lg-6">
-                      <fieldset>
-                        <input type="subject" name="subject" id="subject" placeholder="Subject..." autocomplete="on" >
-                      </fieldset>
-                    </div>
-                    <div class="col-lg-12">
-                      <fieldset>
-                        <textarea name="message" id="message" placeholder="Your Message"></textarea>
-                      </fieldset>
-                    </div>
-                    <div class="col-lg-12">
-                      <fieldset>
-                        <button type="submit" id="form-submit" class="orange-button">Send Message Now</button>
-                      </fieldset>
-                    </div>
-                  </div>
-                </form>
-              </div>
-            </div>
+            </form>
           </div>
         </div>
       </div>
@@ -155,7 +158,7 @@ https://templatemo.com/tm-589-lugx-gaming
   <footer>
     <div class="container">
       <div class="col-lg-12">
-        <p>Copyright © 2048 LUGX Gaming Company. All rights reserved. &nbsp;&nbsp; <a rel="nofollow" href="https://templatemo.com" target="_blank">Design: TemplateMo</a></p>
+        <p>Copyright © 2026 Notable. All Rights Reserved.
       </div>
     </div>
   </footer>

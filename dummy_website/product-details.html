@@ -47,16 +47,12 @@ https://templatemo.com/tm-589-lugx-gaming
             <div class="col-12">
                 <nav class="main-nav">
                     <!-- ***** Logo Start ***** -->
-                    <a href="oldIndex.html" class="logo">
-                        <!-- <<img src="assets/images/logo.png" alt="" style="width: 158px;">> -->
-                    </a>
+                    <h3>catchprase</h3>
                     <!-- ***** Logo End ***** -->
                     <!-- ***** Menu Start ***** -->
                     <ul class="nav">
-                      <li><a href="oldIndex.html">Home</a></li>
-                      <li><a href="index.html">Our Shop</a></li>
-                      <li><a href="contact.html">Contact Us</a></li>
-                      <li><a href="#">Sign In</a></li>
+                      <li><a href="index.html">Home</a></li>
+                      <li><a href="contact.html">Account</a></li>
                   </ul>   
                     <a class='menu-trigger'>
                         <span>Menu</span>
@@ -115,6 +111,7 @@ https://templatemo.com/tm-589-lugx-gaming
           >
             <div class="p-3 mb-3 rounded">No posts yet. Be the first to share!</div>
           </div>
+          <button type="button" id="clear-posts" class="clear-posts-button mt-3">Clear Posts</button>
         </div>
       </div>
     </div>
@@ -143,6 +140,7 @@ https://templatemo.com/tm-589-lugx-gaming
       var counter = document.getElementById("share-thoughts-count");
       var postsList = document.getElementById("posts-list");
       var form = document.querySelector(".single-product form");
+      var clearButton = document.getElementById("clear-posts");
       var storageKey = "user_posts";
 
       if (!textarea || !counter) {
@@ -161,6 +159,13 @@ https://templatemo.com/tm-589-lugx-gaming
         post.className = "p-3 mb-3 border rounded";
         post.textContent = text;
         return post;
+      };
+
+      var createPlaceholder = function () {
+        var placeholder = document.createElement("div");
+        placeholder.className = "p-3 mb-3 rounded";
+        placeholder.textContent = "No posts yet. Be the first to share!";
+        return placeholder;
       };
 
       var loadPosts = function () {
@@ -229,6 +234,16 @@ https://templatemo.com/tm-589-lugx-gaming
         updateCount();
       };
 
+      var clearPosts = function () {
+        if (!postsList) {
+          return;
+        }
+
+        postsList.innerHTML = "";
+        postsList.appendChild(createPlaceholder());
+        localStorage.removeItem(storageKey);
+      };
+
       updateCount();
       textarea.addEventListener("input", updateCount);
       loadPosts();
@@ -238,6 +253,10 @@ https://templatemo.com/tm-589-lugx-gaming
           event.preventDefault();
           addPost();
         });
+      }
+
+      if (clearButton) {
+        clearButton.addEventListener("click", clearPosts);
       }
     });
   </script>

@@ -1429,7 +1429,8 @@ Single Page Style
   display: inline;
 }
 
-.single-product form button {
+.single-product form button,
+.clear-posts-button {
   display: inline-block;
   height: 50px;
   line-height: 50px;
@@ -1448,7 +1449,8 @@ Single Page Style
   margin-right: 5px;
 }
 
-.single-product form button:hover {
+.single-product form button:hover,
+.clear-posts-button:hover {
   background-color: #0071f8;
 }
 
