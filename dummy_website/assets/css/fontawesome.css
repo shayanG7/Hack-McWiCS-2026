@@ -752,7 +752,7 @@ readers do not read off random characters that represent icons */
   content: "\f290"; }
 
 .fa-shopping-bag::before {
-  content: "\f290"; }
+  content: "+"; }
 
 .fa-bahai::before {
   content: "\f666"; }

@@ -94,6 +94,10 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 700;
 }
 
+h4 {
+  font-size: 33px;
+}
+
 ul {
   margin-bottom: 0px;
 }
@@ -1278,11 +1282,11 @@ Shop Page Style
   display: inline-block;
   text-align: center;
   line-height: 40px;
-  width: 40px;
-  height: 40px;
+  width: 130px;
+  height: auto;
   background-color: #ee626b;
   color: #fff;
-  border-radius: 50%;
+  border-radius: 8px;
   right: 25px;
   bottom: 25px;
   transition: all .3s;
