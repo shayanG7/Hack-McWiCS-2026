@@ -9,6 +9,7 @@ class User:
         self.email = str(email)
         self.password_hash = str(password_hash)
         self.pfp = pfp
+        self.id = None  # This will be set when the user is added to the database
 
     @classmethod
     def from_form(cls):
@@ -17,10 +18,13 @@ class User:
         username = request.form.get('username', '')
         email = request.form.get('email', '')
         password = request.form.get('password', '')
+        id = request.form.get('id', None)  # for updating existing users
         # encrypt password  
         hashed_password = generate_password_hash(password)
         
-        return cls(username=username, email=email, password_hash=hashed_password)
+        user = cls(username=username, email=email, password_hash=hashed_password)
+        user.id = id  # Set the ID if it exists (for updating existing users)
+        return user
     
     # ____Password_____
     def set_password(self, raw_password):
@@ -58,5 +62,6 @@ class User:
     def to_dict(self):
         return {
             'username': self.username,
-            'pfp': self.pfp
+            'pfp': self.pfp,
+            'id': self.id
         }
