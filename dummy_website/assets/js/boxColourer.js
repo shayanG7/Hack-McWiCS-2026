@@ -331,19 +331,34 @@ function moveGroupToDiscover(colElement) {
     discoverCol.appendChild(itemDiv);
 
     // append into the Discover More rows — find last discover row (not inside .your-groups)
-    const container = document.querySelector('.section.trending .container');
+    const container = document.querySelector('.section.trending .container .discover-more');
     if (!container) return;
 
-    
-    const allRows = Array.from(container.querySelectorAll('.row.trending-box')); //rows
-    // filter rows that are not inside .your-groups (these are the Discover rows)
-    const discoverRows = allRows.filter(r => r.closest('.your-groups') === null && r.querySelector('.join-group'));
-    let appendRow = null;
+    let discoverRows = container.querySelectorAll('.row.trending-box');
+    // if (discoverRows.length === 0) {
+    //     // create initial row if missing
+    //     const newRow = document.createElement('div');
+    //     newRow.className = 'row trending-box';
+    //     container.appendChild(newRow); //container = Your Groups
+    //     discoverRows = container.querySelectorAll('.row.trending-box'); //make new row, reassign rows
+    // }
 
+    // let appendRow = discoverRows[discoverRows.length - 1];
+    // let cols = appendRow.querySelectorAll('.trending-items').length;
+
+    // // // Bootstrap large screen: 4 columns per row (col-lg-3) -> create new row when full
+    // if (cols >= 4) {
+    //     const newRow = document.createElement('div');
+    //     newRow.className = 'row trending-box';
+    //     container.appendChild(newRow);
+    //     appendRow = newRow;
+    // }
+    
+    let appendRow = null;
     
     if (discoverRows.length > 0) {
         appendRow = discoverRows[discoverRows.length - 1]; //last row
-        const cols = appendRow.querySelectorAll('.trending-items').length;
+        cols = appendRow.querySelectorAll('.trending-items').length;
         // if last discover row is full, create a new one after it
         if (cols >= 4) {
             const newRow = document.createElement('div');
